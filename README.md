@@ -90,8 +90,8 @@ Fragment scoped viewmodels work in a similar fashion. The test app *replaces* fr
 > NestedActivity(guid='2dbce0b').onResume, view model store: androidx.lifecycle.ViewModelStore@2b66c77  
 > NestedActivity(guid='2dbce0b').onResume>> fetching activity scoped view model again: TestViewModel(guid='de910de')  
 > NestedActivity(guid='2dbce0b').onResume>> get app scoped view model TestViewModel(guid='847f565')  
-> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@240142c
-> TestFragment(guid='c7ba42b9').onResume>> got view model: TestViewModel(guid='0a0147b')  
+> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@**240142c**
+> TestFragment(guid='c7ba42b9').onResume>> got view model: TestViewModel(guid='**0a0147b**')  
 > MainActivity(guid='b0bbefe').onStop  
 > TestFragment(guid='c7ba42b9').onPause  
 > TestFragment(guid='c7ba42b9').onStop  
@@ -99,20 +99,20 @@ Fragment scoped viewmodels work in a similar fashion. The test app *replaces* fr
 > TestFragment(guid='c7ba42b9').onDestroy  
 > TestFragment(guid='be377bcc').onCreateView>> got view model: TestViewModel(guid='5e649f8')  
 > TestFragment(guid='be377bcc').onStart  
-> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@138239f  
-> TestFragment(guid='be377bcc').onResume>> got view model: TestViewModel(guid='5e649f8')  
+> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@**138239f**  
+> TestFragment(guid='be377bcc').onResume>> got view model: TestViewModel(guid='**5e649f8**')  
 > TestFragment(guid='be377bcc').onPause  
 > TestFragment(guid='be377bcc').onStop  
 > TestViewModel(guid='5e649f8') was cleared  
 > TestFragment(guid='be377bcc').onDestroy  
 > TestFragment(guid='34f82550').onCreateView>> got view model: TestViewModel(guid='f6b7497')  
 > TestFragment(guid='34f82550').onStart  
-> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@ebbdf52  
-> TestFragment(guid='34f82550').onResume>> got view model: TestViewModel(guid='f6b7497')  
+> TestFragment(guid='c7ba42b9').onResume, view model store: androidx.lifecycle.ViewModelStore@**ebbdf52**  
+> TestFragment(guid='34f82550').onResume>> got view model: TestViewModel(guid='**f6b7497**')  
 
 As you can see, the viewmodels returned are all different from each other, and the viewmodel stores are different.
 
-One thing to note is what happens when you rotate an activity with fragments. The observed behavior is:
+One thing to note is what happens when a configuration change occurs to an activity with fragments. The observed behavior is:
 
 * Activity view model store is the same
 * Fragments are simply recreated, so have *different* view model stores
@@ -152,3 +152,20 @@ That is to say, unless explicitly configured otherwise, there is no automagical 
 > TestFragment(guid='6723a66').onResume>> got view model: TestViewModel(guid='5c50f02')  
 
 `NestedActivity`'s viewmodel store is 'persisted', however `TestFragment`'s viewmodel store is not. This results in the activity obtaining the same viewmodel, and the fragment obtaining a completely new one.
+
+## App scope
+
+Out of the box, I don't believe `Application` has a viewmodel store. A custom application was created that implements `ViewModelStoreOwner` for testing purposes.
+
+Viewmodels obtained using an app scoped viewmodel store owner act as you might expect; they are tied to the application, and thus are persistent past the lifecycles of any activity/fragment/etc. The following test was conducted:
+
+* Start nested activity, rotate, etc.
+
+The following logs concerning app scoped view models were collected:
+
+> MainActivity(guid='abb4b45').onResume>> get app scoped view model TestViewModel(guid='5ae1682')  
+> NestedActivity(guid='666c877').onResume>> get app scoped view model TestViewModel(guid='5ae1682')  
+> NestedActivity(guid='1d68a18').onResume>> get app scoped view model TestViewModel(guid='5ae1682')  
+> NestedActivity(guid='e68e624').onResume>> get app scoped view model TestViewModel(guid='5ae1682')  
+
+As you can see, the viewmodel returned is always the same, as we'd expect.
