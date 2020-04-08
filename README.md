@@ -169,3 +169,20 @@ The following logs concerning app scoped view models were collected:
 > NestedActivity(guid='e68e624').onResume>> get app scoped view model TestViewModel(guid='5ae1682')  
 
 As you can see, the viewmodel returned is always the same, as we'd expect.
+
+
+##Conclusions
+
+Based on these tests, the following is likely true:
+
+1. Activity scoped view models, unless configured otherwise, will have their viewmodel stores persisted on configuration changes
+2. All viewmodels are cleared by the framework automatically, **if** their associated viewmodel store is cleared (or however it works under the hood). No manual reference clearing is necessary, **unless** your viewmodel is being referenced by another class for some reason, such as a model listener, etc.
+
+Regarding 2, there is some text in the documentation, [Saving UI States](https://developer.android.com/topic/libraries/architecture/saving-states#use_viewmodel_to_handle_configuration_changes):
+
+> ViewModels are automatically destroyed by the system when your user backs out of your activity or fragment or if you call finish(), which means the state will be cleared as the user expects in these scenarios.
+
+
+
+
+
