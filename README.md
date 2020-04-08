@@ -170,7 +170,7 @@ The following logs concerning app scoped view models were collected:
 
 As you can see, the viewmodel returned is always the same, as we'd expect.
 
-##Conclusions
+## Conclusions
 
 Based on these tests, the following is likely true:
 
