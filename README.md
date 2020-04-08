@@ -155,7 +155,7 @@ That is to say, unless explicitly configured otherwise, there is no automagical 
 
 ## App scope
 
-Out of the box, I don't believe `Application` has a viewmodel store. A custom application was created that implements `ViewModelStoreOwner` for testing purposes.
+Out of the box, I don't believe `Application` has a viewmodel store. A custom application class was created that implements `ViewModelStoreOwner` for testing purposes.
 
 Viewmodels obtained using an app scoped viewmodel store owner act as you might expect; they are tied to the application, and thus are persistent past the lifecycles of any activity/fragment/etc. The following test was conducted:
 
