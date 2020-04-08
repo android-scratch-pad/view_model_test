@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,13 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
 import java.util.*
 
-class NestedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
+class NestedActivity : TestActivity(), TabLayout.OnTabSelectedListener {
     val guid = UUID.randomUUID().toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.nested)
-        Log.e("DEBUG", "${this}.onCreate")
         val testViewModel = ViewModelProvider(this).get(TestViewModel::class.java)
         Log.e("DEBUG", "${this}.onCreate>> got view model: $testViewModel")
 
@@ -27,14 +25,8 @@ class NestedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         tabLayout.selectTab(tabLayout.getTabAt(0))
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.e("DEBUG", "${this}.onPause")
-    }
-
     override fun onResume() {
         super.onResume()
-        Log.e("DEBUG", "${this}.onResume")
         val testViewModel = ViewModelProvider(this).get(TestViewModel::class.java)
         Log.e(
             "DEBUG",
@@ -44,22 +36,6 @@ class NestedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         val apptestViewModel =
             ViewModelProvider(TestApplication.APP_INSTANCE).get(TestViewModel::class.java)
         Log.e("DEBUG", "${this}.onResume>> get app scoped view model $apptestViewModel")
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-        Log.e("DEBUG", "${this}.onStart")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.e("DEBUG", "${this}.onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.e("DEBUG", "${this}.onDestroy")
     }
 
     override fun toString(): String {
@@ -133,6 +109,7 @@ class NestedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
 
         override fun onResume() {
             super.onResume()
+            Log.e("DEBUG", "${this}.onResume, view model store: ${this.viewModelStore}")
             val testViewModel = ViewModelProvider(this).get(TestViewModel::class.java)
             Log.e("DEBUG", "${this}.onResume>> got view model: $testViewModel")
         }
@@ -158,7 +135,7 @@ class NestedActivity : AppCompatActivity(), TabLayout.OnTabSelectedListener {
         }
 
         override fun toString(): String {
-            return "TestFragment(guid='$guid')"
+            return "TestFragment(guid='${guid.subSequence(0, 7)}')"
         }
     }
 }
